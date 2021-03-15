@@ -80,8 +80,8 @@ ax1.set_title('AUDIO WAVEFORM')
 ax1.set_xlabel('samples')
 ax1.set_ylabel('volume')
 # ax1.set_ylim(0, 255)
-ax1.set_xlim(0, 2 * blocksize)
-plt.setp(ax1, xticks=[0, blocksize, 2 * blocksize])
+ax1.set_xlim(0, blocksize)
+plt.setp(ax1, xticks=[0, blocksize])
 
 # format spectrum axes
 ax2.set_xlim(20, samplerate / 2)
