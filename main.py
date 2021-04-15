@@ -1,12 +1,8 @@
-# import time, math, sys, queue
 import scipy.fftpack as fft
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as ani
 import sounddevice as sd
-# import soundfile as sf
-# import scipy.signal as sig
-
 
 # samplerate = sd.query_devices(sd.default.device, 'input')['default_samplerate']
 # q = queue.Queue()
@@ -42,7 +38,7 @@ import sounddevice as sd
 
 samplerate = sd.query_devices(sd.default.device, 'input')['default_samplerate']
 blocksize = 1024 * 2
-data = np.zeros((blocksize))
+data = np.zeros(blocksize)
 
 
 def callback(indata, frames, time, status):
@@ -79,9 +75,9 @@ line_fft, = ax2.semilogx(xf, data, '-', lw=2)
 ax1.set_title('AUDIO WAVEFORM')
 ax1.set_xlabel('samples')
 ax1.set_ylabel('volume')
-# ax1.set_ylim(0, 255)
+ax1.set_ylim(-1, 1)
 ax1.set_xlim(0, blocksize)
-plt.setp(ax1, xticks=[0, blocksize])
+plt.setp(ax1, xticks=[0, blocksize], yticks=np.linspace(-1, 1, num=5, endpoint=True))
 
 # format spectrum axes
 ax2.set_xlim(20, samplerate / 2)
