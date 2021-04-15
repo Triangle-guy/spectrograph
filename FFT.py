@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def format_figure(blocksize, samplerate):
+def format_figure(blocksize, samplerate, data):
     # create matplotlib figure and axes
     fig, (ax1, ax2) = plt.subplots(2, figsize=(15, 7))
 
@@ -15,7 +15,7 @@ def format_figure(blocksize, samplerate):
     line, = ax1.plot(x)
 
     # create semilogx line for spectrum
-    line_fft, = ax2.semilogx(xf)
+    line_fft, = ax2.semilogx(xf, data, '-', lw=2)
 
     # format waveform axes
     ax1.set_title('AUDIO WAVEFORM')

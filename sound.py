@@ -5,7 +5,7 @@ import FFT
 samplerate = sd.query_devices(sd.default.device, 'input')['default_samplerate']
 blocksize = 1024 * 2
 data = np.zeros([blocksize, 2])
-fig, line, line_fft = FFT.format_figure(blocksize, samplerate)
+fig, line, line_fft = FFT.format_figure(blocksize, samplerate, data)
 
 
 stream = sd.InputStream(channels=1, samplerate=samplerate, blocksize=blocksize)
