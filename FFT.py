@@ -40,4 +40,4 @@ def update(fig, line, line_fft, data, blocksize):
 
     fig.canvas.draw()
     fig.canvas.flush_events()
-    plt.show()
+    plt.show(block=False)

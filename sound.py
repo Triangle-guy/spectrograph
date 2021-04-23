@@ -2,9 +2,11 @@ import numpy as np
 import sounddevice as sd
 import FFT
 
+
+sd.default.latency = 'low'
 samplerate = sd.query_devices(sd.default.device, 'input')['default_samplerate']
 blocksize = 1024 * 2
-data = np.zeros([blocksize, 2])
+data = np.zeros([blocksize])
 fig, line, line_fft = FFT.format_figure(blocksize, samplerate, data)
 
 
