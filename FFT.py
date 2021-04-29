@@ -1,11 +1,12 @@
 import scipy.fftpack as fft
 import numpy as np
 import matplotlib.pyplot as plt
-from commpy.filters import rcosfilter as rc
+import scipy.signal as sig
+from commpy.filters import rcosfilter
 
 
 def format_figure(blocksize, samplerate, data):
-    scale = 4
+    scale = 1
 
     # create matplotlib figure and axes
     fig, (ax1, ax2) = plt.subplots(2, figsize=(15, 7))
@@ -42,16 +43,18 @@ def interpolate(data, n):
     interdata = np.zeros(len(data) * n)
     interdata[:: n] = data
 
-    return
+    rc = rcosfilter(len(interdata), 1, 1, n)[1]
+    interdata = sig.lfilter(rc, np.ones(len(interdata)), interdata)
+
+    return interdata
 
 
 def update(fig, line, line_fft, data, blocksize):
 
-    if blocksize != 0:
-        line.set_ydata(data)
+    line.set_ydata(data)
 
-        yf = fft.fft(data)
-        line_fft.set_ydata(np.abs(yf[0:blocksize]) * 2 / blocksize)
+    yf = fft.fft(data)
+    line_fft.set_ydata(np.abs(yf[0:blocksize]) * 2 / blocksize)
 
-        fig.canvas.draw()
-        fig.canvas.flush_events()
+    fig.canvas.draw()
+    fig.canvas.flush_events()
