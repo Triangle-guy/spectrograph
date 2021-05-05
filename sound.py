@@ -11,7 +11,8 @@ fig, sl_x_sc, sl_x_sh, \
     b_on_off_1, line1, sl_y_sc_1, sl_y_sh_1, \
     b_on_off_2, line2, sl_y_sc_2, sl_y_sh_2, \
     line_fft_1, line_fft_2, r_sl, dot, \
-    xcur1, xcur2, ycur1, ycur2 = FFT2.format_figure(blocksize)
+    xcur1, xcur2, ycur1, ycur2, b_on_off_cur, \
+    bm = FFT2.format_figure(blocksize)
 
 stream = sd.InputStream(channels=2, blocksize=blocksize, latency=0.0)
 
@@ -24,6 +25,7 @@ with stream as s:
                 line_fft_1.set_linestyle('-')
                 FFT2.update(fig, line1, data[:, 0], sl_x_sc.val, sl_y_sc_1.val, sl_x_sh.val, sl_y_sh_1.val)
                 FFT2.update_fft(fig, line_fft_1, data[:, 0])
+                bm.update()
             else:
                 line1.set_linestyle('')
                 line_fft_1.set_linestyle('')
@@ -33,6 +35,7 @@ with stream as s:
                 line_fft_2.set_linestyle('-')
                 FFT2.update(fig, line2, data[:, 1], sl_x_sc.val, sl_y_sc_2.val, sl_x_sh.val, sl_y_sh_2.val)
                 FFT2.update_fft(fig, line_fft_2, data[:, 1])
+                bm.update()
             else:
                 line2.set_linestyle('')
                 line_fft_2.set_linestyle('')
@@ -42,3 +45,14 @@ with stream as s:
             line2.set_linestyle('')
             line_fft_2.set_linestyle('')
             FFT2.do_nothing(fig, dot)
+
+        if b_on_off_cur.color == '#ec1c24':
+            xcur1.line.set_linestyle('--')
+            xcur2.line.set_linestyle('--')
+            ycur1.line.set_linestyle('--')
+            ycur2.line.set_linestyle('--')
+        else:
+            xcur1.line.set_linestyle('')
+            xcur2.line.set_linestyle('')
+            ycur1.line.set_linestyle('')
+            ycur2.line.set_linestyle('')

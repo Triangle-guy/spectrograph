@@ -6,53 +6,8 @@ import matplotlib.pyplot as plt
 import matplotlib.widgets as wdgt
 from commpy.filters import rcosfilter
 
-
-class Cursor:
-    def __init__(self, line):
-        self.line = line
-        self.press = None
-        if self.line.get_xdata()[0] == self.line.get_xdata()[1]:
-            self.orient = 'v'
-        elif self.line.get_ydata()[0] == self.line.get_ydata()[1]:
-            self.orient = 'h'
-        self.line.figure.canvas.mpl_connect('button_press_event', self.on_press)
-        self.line.figure.canvas.mpl_connect('button_release_event', self.on_release)
-        self.line.figure.canvas.mpl_connect('motion_notify_event', self.on_motion)
-
-    def on_press(self, event):
-        if event.inaxes != self.line.axes:
-            return
-        if event.button != 1:
-            return
-
-        if self.orient == 'v':
-            if np.abs(event.xdata - self.line.get_xdata()[0]) > 0.05:
-                return
-            self.press = self.line.get_xdata()[0], event.xdata
-        elif self.orient == 'h':
-            if np.abs(event.ydata - self.line.get_ydata()[0]) > 0.05:
-                return
-            self.press = self.line.get_ydata()[0], event.ydata
-
-    def on_motion(self, event):
-        if self.press is None or event.inaxes != self.line.axes:
-            return
-        if self.orient == 'v':
-            x0, xpress = self.press
-            dx = event.xdata - xpress
-            self.line.set_xdata([x0 + dx, x0 + dx])
-
-            self.line.figure.canvas.draw()
-        elif self.orient == 'h':
-            y0, ypress = self.press
-            dy = event.ydata - ypress
-            self.line.set_ydata([y0 + dy, y0 + dy])
-
-            self.line.figure.canvas.draw()
-
-    def on_release(self, event):
-        self.press = None
-        self.line.figure.canvas.draw()
+import Cursor_class as Cc
+import BlittingManager_class as BMc
 
 
 def on_close(event):
@@ -74,7 +29,7 @@ def format_figure(blocksize):
     # choosing style
     plt.style.use('dark_background')
 
-    # creating figure and gridspec
+    # creating figure and gridspec instance
     fig = plt.figure(figsize=(16, 10))
     gs = fig.add_gridspec(40, 64)
 
@@ -178,30 +133,48 @@ def format_figure(blocksize):
 
     r_sl.on_changed(change_size)
 
+    # creating on/off button for cursors
+    ax_b_on_off_cur = fig.add_subplot(gs[5:7, 33:38])
+    b_on_off_cur = wdgt.Button(ax_b_on_off_cur, 'Cursors', None, '0.85', '#f25d63')
+    b_on_off_cur.label.set_color('#000000')
+
+    # making on/off button for cursors change color on click
+    def button_change_cur(event):
+        if b_on_off_cur.color == '#ec1c24':
+            b_on_off_cur.color = '0.85'
+        else:
+            b_on_off_cur.color = '#ec1c24'
+
+    b_on_off_cur.on_clicked(button_change_cur)
+
     # creating starter plots for all channels
     dot, = ax1.plot([0], [0], '')
     line1, = ax1.plot(np.linspace(-1, 1, blocksize), np.zeros(blocksize), '#f4bb32')
     line2, = ax1.plot(np.linspace(-1, 1, blocksize), np.zeros(blocksize), '#81b78f')
+    line2.set_linestyle('')
     line_fft_1, = ax2.plot(np.linspace(0, 1, blocksize), np.zeros(blocksize), '#f4bb32')
     line_fft_2, = ax2.plot(np.linspace(0, 1, blocksize), np.zeros(blocksize), '#81b78f')
+    line_fft_2.set_linestyle('')
 
-    xcur1_line = ax1.axvline(-0.5, c='r', ls='--')
-    xcur1 = Cursor(xcur1_line)
-    xcur2_line = ax1.axvline(0.5, c='r', ls='--')
-    xcur2 = Cursor(xcur2_line)
-    ycur1_line = ax1.axhline(-0.5, c='r', ls='--')
-    ycur1 = Cursor(ycur1_line)
-    ycur2_line = ax1.axhline(0.5, c='r', ls='--')
-    ycur2 = Cursor(ycur2_line)
+    xcur1 = Cc.Cursor(ax1.axvline(-0.5, c='r', ls=''), b_on_off_cur)
+    xcur2 = Cc.Cursor(ax1.axvline(0.5, c='r', ls=''), b_on_off_cur)
+    ycur1 = Cc.Cursor(ax1.axhline(-0.5, c='r', ls=''), b_on_off_cur)
+    ycur2 = Cc.Cursor(ax1.axhline(0.5, c='r', ls=''), b_on_off_cur)
+
+    # making blitting manager
+    bm = BMc.BlitManager(fig.canvas,
+                         [line1, line2, line_fft_1, line_fft_2, xcur1.line, xcur2.line, ycur1.line, ycur2.line])
 
     # making plot visible
     plt.show(block=False)
+    plt.pause(.1)
 
     return fig, sl_x_sc, sl_x_sh, \
            b_on_off_1, line1, sl_y_sc_1, sl_y_sh_1, \
            b_on_off_2, line2, sl_y_sc_2, sl_y_sh_2, \
            line_fft_1, line_fft_2, r_sl, dot, \
-           xcur1, xcur2, ycur1, ycur2
+           xcur1, xcur2, ycur1, ycur2, b_on_off_cur, \
+           bm
 
 
 def update(fig, line, data, xscale=1.0, yscale=1.0, xshift=0.0, yshift=0.0):
