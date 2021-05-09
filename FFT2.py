@@ -99,14 +99,19 @@ def format_figure(blocksize):
     # creating on/off button for channel 1
     ax_b_on_off_1 = fig.add_subplot(gs[18:19, 36:37])
     b_on_off_1 = wdgt.Button(ax_b_on_off_1, '1', None, '#f4bb32', '#efc35b')
-    b_on_off_1.label.set_color('0.0')
+    b_on_off_1.label.set_color('0')
 
     # making on/off button for channel 1 change color on click
     def button_change_1(event):
         if b_on_off_1.color == '#f4bb32':
             b_on_off_1.color = '0.85'
+            line1.set_linestyle('')
+            line_fft_1.set_linestyle('')
         else:
             b_on_off_1.color = '#f4bb32'
+            line1.set_linestyle('-')
+            if b_on_off_s.color == '0.95':
+                line_fft_1.set_linestyle('-')
 
     b_on_off_1.on_clicked(button_change_1)
 
@@ -124,14 +129,19 @@ def format_figure(blocksize):
     # creating on/off button for channel 2
     ax_b_on_off_2 = fig.add_subplot(gs[18:19, 44:45])
     b_on_off_2 = wdgt.Button(ax_b_on_off_2, '2', None, '0.85', '#9fd1ac')
-    b_on_off_2.label.set_color('0.0')
+    b_on_off_2.label.set_color('0')
 
     # making on/off button for channel 2 change color on click
     def button_change_2(event):
         if b_on_off_2.color == '#81b78f':
             b_on_off_2.color = '0.85'
+            line2.set_linestyle('')
+            line_fft_2.set_linestyle('')
         else:
             b_on_off_2.color = '#81b78f'
+            line2.set_linestyle('-')
+            if b_on_off_s.color == '0.95':
+                line_fft_2.set_linestyle('-')
 
     b_on_off_2.on_clicked(button_change_2)
 
@@ -149,7 +159,7 @@ def format_figure(blocksize):
     # creating on/off button for channel 3
     ax_b_on_off_3 = fig.add_subplot(gs[18:19, 52:53])
     b_on_off_3 = wdgt.Button(ax_b_on_off_3, '3', None, '0.85', '#89a8db')
-    b_on_off_3.label.set_color('0.0')
+    b_on_off_3.label.set_color('0')
 
     # making on/off button for channel 3 change color on click
     def button_change_3(event):
@@ -174,7 +184,7 @@ def format_figure(blocksize):
     # creating on/off button for channel 4
     ax_b_on_off_4 = fig.add_subplot(gs[18:19, 60:61])
     b_on_off_4 = wdgt.Button(ax_b_on_off_4, '4', None, '0.85', '#f5b8d8')
-    b_on_off_4.label.set_color('0.0')
+    b_on_off_4.label.set_color('0')
 
     # making on/off button for channel 4 change color on click
     def button_change_4(event):
@@ -199,14 +209,20 @@ def format_figure(blocksize):
     # creating on/off button spectrum
     ax_b_on_off_s = fig.add_subplot(gs[24:26, 35:40])
     b_on_off_s = wdgt.Button(ax_b_on_off_s, 'Spectrum', None, '0.85', 'w')
-    b_on_off_s.label.set_color('0.0')
+    b_on_off_s.label.set_color('0')
 
     # making on/off button for spectrum change color on click
     def button_change_s(event):
         if b_on_off_s.color == '0.95':
             b_on_off_s.color = '0.85'
+            line_fft_1.set_linestyle('')
+            line_fft_2.set_linestyle('')
         else:
             b_on_off_s.color = '0.95'
+            if b_on_off_1.color == '#f4bb32':
+                line_fft_1.set_linestyle('-')
+            if b_on_off_2.color == '#81b78f':
+                line_fft_2.set_linestyle('-')
 
     b_on_off_s.on_clicked(button_change_s)
 
@@ -223,23 +239,31 @@ def format_figure(blocksize):
     r_sl.on_changed(change_size)
 
     # creating on/off button for cursors
-    ax_b_on_off_cur = fig.add_subplot(gs[8:10, 35:40])
+    ax_b_on_off_cur = fig.add_subplot(gs[3:5, 53:58])
     b_on_off_cur = wdgt.Button(ax_b_on_off_cur, 'Cursors', None, '0.85', '0.95')
-    b_on_off_cur.label.set_color('0.0')
+    b_on_off_cur.label.set_color('0')
 
     # making on/off button for cursors change color on click
     def button_change_cur(event):
         if b_on_off_cur.color == '#4cd147':
             b_on_off_cur.color = '0.85'
             b_on_off_cur.hovercolor = '0.95'
+            xcur1.line.set_linestyle('')
+            xcur2.line.set_linestyle('')
+            ycur1.line.set_linestyle('')
+            ycur2.line.set_linestyle('')
         else:
             b_on_off_cur.color = '#4cd147'
             b_on_off_cur.hovercolor = '#2fff27'
+            xcur1.line.set_linestyle('--')
+            xcur2.line.set_linestyle('--')
+            ycur1.line.set_linestyle('--')
+            ycur2.line.set_linestyle('--')
 
     b_on_off_cur.on_clicked(button_change_cur)
 
     # making reset button
-    ax_b_reset = fig.add_subplot(gs[3:5, 53:58])
+    ax_b_reset = fig.add_subplot(gs[6:8, 53:58])
     b_reset = wdgt.Button(ax_b_reset, 'Reset', None, '#f96b6b', '#fa9494')
 
     # making reset button reset all sliders' and cursors' positions
@@ -254,6 +278,7 @@ def format_figure(blocksize):
         sl_y_sh_3.reset()
         sl_y_sc_4.reset()
         sl_y_sh_4.reset()
+        sl_tr.reset()
         r_sl.set_val([0.0, 22050.0])
         xcur1.line.set_xdata([-0.5, -0.5])
         xcur2.line.set_xdata([0.5, 0.5])
@@ -265,34 +290,63 @@ def format_figure(blocksize):
     # making single frame button
     ax_b_single = fig.add_subplot(gs[3:5, 61:66])
     b_single = wdgt.Button(ax_b_single, 'Single', None, '0.85', 'w')
-    b_single.label.set_color('0.0')
+    b_single.label.set_color('0')
 
     # making single frame button work
+    def single(event):
+        if b_run_stop.color == '#4cd147':
+            b_run_stop.color = '0.85'
+            b_run_stop.hovercolor = '0.95'
+
+    b_single.on_clicked(single)
 
     # making run/stop button
     ax_b_run_stop = fig.add_subplot(gs[6:8, 61:66])
     b_run_stop = wdgt.Button(ax_b_run_stop, 'Run/Stop', None, '0.85', 'w')
-    b_run_stop.label.set_color('0.0')
+    b_run_stop.label.set_color('0')
 
     # making run/stop button work
+    def run_stop(event):
+        if b_run_stop.color == '#4cd147':
+            b_run_stop.color = '0.85'
+            b_run_stop.hovercolor = '0.95'
+        else:
+            b_run_stop.color = '#4cd147'
+            b_run_stop.hovercolor = '#2fff27'
+
+    b_run_stop.on_clicked(run_stop)
+
+    # making trigger on/off button
+    ax_b_on_off_tr = fig.add_subplot(gs[8:10, 35:40])
+    b_on_off_tr = wdgt.Button(ax_b_on_off_tr, 'Trigger', None, '0.85', 'w')
+    b_on_off_tr.label.set_color('0')
+
+    # making trigger on/off button work
+    # ...
+
+    # making trigger position slider
+
+    ax_sl_tr = fig.add_subplot(gs[12:13, 35:50])
+    ax_sl_tr.set_title('Trigger position', fontsize=10)
+    sl_tr = wdgt.Slider(ax_sl_tr, '', -1, 1, valinit=0, facecolor='0.95')
 
     # creating starter plots for all channels
     dot, = ax1.plot([0], [0], '')
     line1, = ax1.plot(np.linspace(-1, 1, blocksize), np.zeros(blocksize), '#f4bb32')
     line2, = ax1.plot(np.linspace(-1, 1, blocksize), np.zeros(blocksize), '#81b78f')
-    line3, = ax1.plot(np.linspace(-1, 1, blocksize), np.zeros(blocksize), '#6590d8')
-    line4, = ax1.plot(np.linspace(-1, 1, blocksize), np.zeros(blocksize), '#de8fb9')
+    # line3, = ax1.plot(np.linspace(-1, 1, blocksize), np.zeros(blocksize), '#6590d8')
+    # line4, = ax1.plot(np.linspace(-1, 1, blocksize), np.zeros(blocksize), '#de8fb9')
     line2.set_linestyle('')
-    line3.set_linestyle('')
-    line4.set_linestyle('')
+    # line3.set_linestyle('')
+    # line4.set_linestyle('')
     line_fft_1, = ax2.plot(np.linspace(0, 1, blocksize), np.zeros(blocksize), '#f4bb32')
     line_fft_2, = ax2.plot(np.linspace(0, 1, blocksize), np.zeros(blocksize), '#81b78f')
-    line_fft_3, = ax2.plot(np.linspace(0, 1, blocksize), np.zeros(blocksize), '#6590d8')
-    line_fft_4, = ax2.plot(np.linspace(0, 1, blocksize), np.zeros(blocksize), '#de8fb9')
+    # line_fft_3, = ax2.plot(np.linspace(0, 1, blocksize), np.zeros(blocksize), '#6590d8')
+    # line_fft_4, = ax2.plot(np.linspace(0, 1, blocksize), np.zeros(blocksize), '#de8fb9')
     line_fft_1.set_linestyle('')
     line_fft_2.set_linestyle('')
-    line_fft_3.set_linestyle('')
-    line_fft_4.set_linestyle('')
+    # line_fft_3.set_linestyle('')
+    # line_fft_4.set_linestyle('')
 
     xcur1 = Cc.Cursor(ax1.axvline(-0.5, c='r', ls=''), b_on_off_cur)
     xcur2 = Cc.Cursor(ax1.axvline(0.5, c='r', ls=''), b_on_off_cur)
@@ -301,7 +355,7 @@ def format_figure(blocksize):
 
     # making blitting manager
     bm = BMc.BlitManager(fig.canvas,
-                         [line1, line2, line3, line4, line_fft_1, line_fft_2, line_fft_3, line_fft_4,
+                         [line1, line2, line_fft_1, line_fft_2,
                           xcur1.line, xcur2.line, ycur1.line, ycur2.line])
 
     # making plot visible
@@ -313,7 +367,8 @@ def format_figure(blocksize):
            b_on_off_2, line2, sl_y_sc_2, sl_y_sh_2, \
            b_on_off_s, line_fft_1, line_fft_2, r_sl, dot, \
            xcur1, xcur2, ycur1, ycur2, b_on_off_cur, \
-           b_reset, bm
+           b_reset, b_single, b_run_stop, b_on_off_tr,\
+           sl_tr, bm
 
 
 def update(fig, line, data, xscale=1.0, yscale=1.0, xshift=0.0, yshift=0.0):
@@ -331,13 +386,6 @@ def update_fft(fig, line_fft, data):
     xdata = np.linspace(0, 1, len(ydata))
 
     line_fft.set_data(xdata, np.abs(ydata) * 2 / len(ydata))
-
-    fig.canvas.draw()
-    fig.canvas.flush_events()
-
-
-def do_nothing(fig, dot):
-    dot.set_data([0], [0])
 
     fig.canvas.draw()
     fig.canvas.flush_events()
