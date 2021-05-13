@@ -19,16 +19,14 @@ class Cursor:
             return
         if event.button != 1:
             return
-        if self.button.color != '#ec1c24':
+        if self.button.color != '#4cd147':
+            return
+        if not self.line.contains(event)[0]:
             return
 
         if self.orient == 'v':
-            if np.abs(event.xdata - self.line.get_xdata()[0]) > 0.05:
-                return
             self.press = self.line.get_xdata()[0], event.xdata
         elif self.orient == 'h':
-            if np.abs(event.ydata - self.line.get_ydata()[0]) > 0.05:
-                return
             self.press = self.line.get_ydata()[0], event.ydata
 
     def on_motion(self, event):
